@@ -1,0 +1,30 @@
+1. testPerson2에서 post로 요청했기 때문에 html생성부에서 doPost를 작성해야한다.
+2. 생성부가 어디임?
+	action="/web/testPerson2.do"로 지정했음.
+3. testPerson2.do가 뭐임?
+	web.xml에서 매핑시켜놨음
+4. 매핑시킨게 뭐임?
+  <servlet>
+  	<servlet-name>TestPerson2Servlet</servlet-name> 이라고 servlet 이름을 지정하고
+  	<servlet-class>com.kh.web.servlet.TestPerson2Servlet</servlet-class> 실행할 자바파일 위치를 알려주고
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>TestPerson2Servlet</servlet-name>	같은 이름을 지정하고
+  	<url-pattern>/testPerson2.do</url-pattern>	3번에서 지은 이름을 그대로 써넣는다.
+  </servlet-mapping>
+여기까지 하면 제출시에 TestPerson2Servlet을 실행하게 된다.
+5.	//0. encoding선언
+	//1. 사용자 입력값을 변수에 담는다
+	//2. 업무로직			
+	//jsp에 새로 생성된 data를 전달하기 위해 request에 속성으로 저장한다.
+	//3. html작성을 jsp에 위임.(testPersonEnd.jsp)
+6. testPersonEnd.jsp 로 생성될 html구문 작성.
+	
+Header와 Footer는 재사용하고 Content만 바꾸는 방법!
+일반 html구문 작성한 뒤에
+1. header.jsp 작성. header쪽을 잘라내서 붙임
+2. footer.jsp 작성. footer쪽을 잘라내서 붙임
+3. 원래 있던 jsp파일의 header와 footer 자리에 해당구문 작성.
+	<%@ include file="/jsp/header.jsp" %>
+	<%@ include file="/jsp/footer.jsp" %>
