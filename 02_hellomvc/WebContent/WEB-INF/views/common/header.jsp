@@ -98,7 +98,8 @@
 						</tr>
 						<tr>
 							<td>
-								<input type="button" value="내정보보기" />
+								<input type="button" value="내정보보기" 
+									onclick="location.href='<%=request.getContextPath() %>/member/memberView';"/>
 								<input type="button" value="로그아웃"
 								 onclick="location.href='<%=request.getContextPath() %>/member/Logout'"/>
 							</td>

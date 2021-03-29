@@ -53,3 +53,5 @@ values (
 delete from member where member_id like 'newId%';
 commit;
 select * from member;
+update member set password='1234', member_name='newOne', member_role=''
+where member_id='asdfasdf';

@@ -73,7 +73,37 @@ Session msg가 날아오는 경우는
 
 db의 속성이 변하지 않으면 doGet, 변하면 doPost
 
+화면 연결하는방법
+일단 원하는 jsp 파일 위치에서
+onclick="location.href='<%=request.getContextPath() %>/member/memberView';"/>
+memberViewServlet 생성하면서 url에 위의 /member/memberView 복붙
+servlet파일의 doGet이나 doPost에 jsp 위임처리로 jsp 위치 알려줌.
+request.getRequestDispatcher("/WEB-INF/views/member/memberView.jsp")
+		.forward(request, response);
+이제 화면 표시할 memberView.jsp 작성.
+
+<%! 느낌표는 선언문. java 파일 만들때 맨 위로 올라간다.
+
+jsp 컴파일 경로 고정하기
+WEB_INF > work 폴더 생성. 절대주소 복사.
+Servers 프로젝트>hellomvc-server-config>context.tml
+<Context workDir="C:\Workspaces\web_server_workspace\02_hellomvc\WebContent\WEB-INF\work">
+로 경로 추가
+
 숙제
-회원가입 구현
-alert 가입성공 띄우고 첫페이지로 redirect
-id중복은 스킵.
+1. 수정
+회원정보란에서 정보수정 누르면 수정된거 반영
+2. 탈퇴
+탈퇴버튼 누르면 delete
+탈퇴 Post 방식으로 처리...하려면 form method="POST"가 필요함.
+아마 /mvc로 리다이렉트하도록?
+
+			pstmt.setString(1, member.getPassword());
+			pstmt.setString(2, member.getMemberName());
+			pstmt.setString(3, member.getGender());
+			pstmt.setDate(4, member.getBirthday());
+			pstmt.setString(5, member.getEmail());
+			pstmt.setString(6, member.getPhone());
+			pstmt.setString(7, member.getAddress());
+			pstmt.setString(8, member.getHobby());
+			pstmt.setString(9, member.getMemberId());

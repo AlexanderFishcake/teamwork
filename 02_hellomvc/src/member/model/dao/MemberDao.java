@@ -101,4 +101,57 @@ public class MemberDao {
 		
 		return result;
 	}
+
+	public int updateMember(Connection conn, Member member) {
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updateMember");
+		int result = 0;
+
+		try {
+			//3. PreparedStatement 객체 생성(미완성쿼리)
+			pstmt = conn.prepareStatement(sql);
+			//3-1) 미완성쿼리의 '?'에 값 대입
+			pstmt.setString(1, member.getPassword());
+			pstmt.setString(2, member.getMemberName());
+			pstmt.setString(3, member.getGender());
+			pstmt.setDate(4, member.getBirthday());
+			pstmt.setString(5, member.getEmail());
+			pstmt.setString(6, member.getPhone());
+			pstmt.setString(7, member.getAddress());
+			pstmt.setString(8, member.getHobby());
+			pstmt.setString(9, member.getMemberId());
+			//4. 실행 DML(executeUpdate) -> int , DQL(executeQuery) -> REsultSet
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//5. 자원반납(pstmt)
+		close(pstmt);
+		
+		return result;
+	}
+
+	public int deleteId(Connection conn, String memberId) {
+		PreparedStatement pstmt = null;
+//		String sql = "delete from member where member_id = ?";
+		String sql = prop.getProperty("deleteMember");
+		int result = 0;
+
+		try {
+			//3. PreparedStatement 객체 생성(미완성쿼리)
+			pstmt = conn.prepareStatement(sql);
+			//3-1) 미완성쿼리의 '?'에 값 대입
+			pstmt.setString(1, memberId);
+			//4. 실행 DML(executeUpdate) -> int , DQL(executeQuery) -> REsultSet
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//5. 자원반납(pstmt)
+		close(pstmt);
+		
+		return result;
+	}
 }
