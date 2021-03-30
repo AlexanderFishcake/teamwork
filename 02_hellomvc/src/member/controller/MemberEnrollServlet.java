@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import common.MvcUtils;
 import member.model.service.MemberService;
 import member.model.vo.Member;
 
@@ -34,11 +35,10 @@ public class MemberEnrollServlet extends HttpServlet {
 	 * 회원가입 처리 - db에 저장
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//1. encoding처리
-		request.setCharacterEncoding("UTF-8");
+
 		//2. 사용자 입력값 처리
 		String memberId = request.getParameter("memberId");
-		String password = request.getParameter("password");
+		String password = MvcUtils.getSha512(request.getParameter("password"));
 		String memberName = request.getParameter("memberName");
 		String birthdayStr = request.getParameter("birthday");
 		String email = request.getParameter("email");

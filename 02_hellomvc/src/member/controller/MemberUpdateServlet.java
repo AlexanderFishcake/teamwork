@@ -22,12 +22,18 @@ public class MemberUpdateServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	MemberService memberService = new MemberService();
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession	session = request.getSession();
+		
 		//1. encoding처리
 		request.setCharacterEncoding("UTF-8");
 		//2. 사용자 입력값 처리
 		String memberId = request.getParameter("memberId");
-		String password = request.getParameter("password");
+//		String password = request.getParameter("password");
+		//password를 기존 loginMember에서 가져옴
+		Member loginMember = (Member)session.getAttribute("loginMember");
+		String password = loginMember.getPassword();
+		
 		String memberName = request.getParameter("memberName");
 		String birthdayStr = request.getParameter("birthday");
 		String email = request.getParameter("email");
@@ -70,23 +76,21 @@ public class MemberUpdateServlet extends HttpServlet {
 		//1. 성공: result==1
 		//2. 실패 : result==0 || result==null
 		
-		HttpSession	session = request.getSession();
+		
 		
 		if(result==1) {
 			//성공
 			session.setAttribute("msg", "회원정보 수정 성공했습니다.");
-			//리다이렉트 : url변경
+			//세션의 정보도 갱신. 이게 있어야 수정된 정보가 반영됨.
+			session.setAttribute("loginMember", memberService.selectOne(memberId));
 		}
 		else if(result==0){
 			//실패
 			session.setAttribute("msg", "회원정보 수정 실패했습니다.");
 		}
-		response.sendRedirect(request.getContextPath());
+		response.sendRedirect(request.getContextPath() + "/member/memberView");
 				
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("doPost진입");
-	}
 
 }

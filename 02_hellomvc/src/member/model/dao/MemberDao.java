@@ -134,7 +134,6 @@ public class MemberDao {
 
 	public int deleteId(Connection conn, String memberId) {
 		PreparedStatement pstmt = null;
-//		String sql = "delete from member where member_id = ?";
 		String sql = prop.getProperty("deleteMember");
 		int result = 0;
 
@@ -154,4 +153,30 @@ public class MemberDao {
 		
 		return result;
 	}
+
+	public int updatePassword(Connection conn, String memberId, String newPassword) {
+		PreparedStatement pstmt = null;
+		//update member set password=? where member_id=?
+		String sql = prop.getProperty("updatePassword");
+		int result = 0;
+
+		try {
+			//3. PreparedStatement 객체 생성(미완성쿼리)
+			pstmt = conn.prepareStatement(sql);
+			//3-1) 미완성쿼리의 '?'에 값 대입
+			pstmt.setString(1, newPassword);
+			pstmt.setString(2, memberId);
+			//4. 실행 DML(executeUpdate) -> int , DQL(executeQuery) -> REsultSet
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//5. 자원반납(pstmt)
+		close(pstmt);
+		
+		return result;
+	}
+
+
 }

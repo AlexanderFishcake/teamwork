@@ -73,9 +73,17 @@ Session msg가 날아오는 경우는
 
 db의 속성이 변하지 않으면 doGet, 변하면 doPost
 
-화면 연결하는방법
+<!!!---화면 연결하는방법---!!!>
 일단 원하는 jsp 파일 위치에서
-onclick="location.href='<%=request.getContextPath() %>/member/memberView';"/>
+1. onclick="location.href='<%=request.getContextPath() %>/member/memberView';"/>
+2. 
+$frm = $(document.memberUpdateFrm);
+$frm.attr("action", "<%= request.getContextPath()%>/member/memberUpdate")
+	.attr("method","GET")
+	.submit();
+console.log($frm);
+아무튼 form의 action에 주소 등록하고 GET/POST 방식 정하고 submit하라는 뜻.
+
 memberViewServlet 생성하면서 url에 위의 /member/memberView 복붙
 servlet파일의 doGet이나 doPost에 jsp 위임처리로 jsp 위치 알려줌.
 request.getRequestDispatcher("/WEB-INF/views/member/memberView.jsp")
@@ -90,20 +98,60 @@ Servers 프로젝트>hellomvc-server-config>context.tml
 <Context workDir="C:\Workspaces\web_server_workspace\02_hellomvc\WebContent\WEB-INF\work">
 로 경로 추가
 
-숙제
-1. 수정
-회원정보란에서 정보수정 누르면 수정된거 반영
-2. 탈퇴
-탈퇴버튼 누르면 delete
-탈퇴 Post 방식으로 처리...하려면 form method="POST"가 필요함.
-아마 /mvc로 리다이렉트하도록?
+memberDelete 요청시 진행과정
+시작 : /member/memberDelete
 
-			pstmt.setString(1, member.getPassword());
-			pstmt.setString(2, member.getMemberName());
-			pstmt.setString(3, member.getGender());
-			pstmt.setDate(4, member.getBirthday());
-			pstmt.setString(5, member.getEmail());
-			pstmt.setString(6, member.getPhone());
-			pstmt.setString(7, member.getAddress());
-			pstmt.setString(8, member.getHobby());
-			pstmt.setString(9, member.getMemberId());
+1. memberView의 deleteMember()호출.
+1. mvc/member/memberDelete
+1. MemberDeleteServlet(controller)에서 memberService.deleteMember호출. 0/1리턴
+1. MemberService에서 memberDao.deleteId호출. 0/1리턴
+1. MemberDao에서 db에 sql 요청. 0/1리턴
+
+제가 Network탭을 잘 몰라서요
+Network에서 확인할 수 있는 요청이
+memberDelete Logout mvc 3가지인데
+여기서 이 3개가 브라우저의 요청이라는걸 상태:302를 보고 구별하는건가요?
+
+요청 : header>요청 URL: http://localhost:9090/mvc/member/memberDelete
+리다이렉트 : 헤더>응답헤더>Location의 주소 Location: /mvc/member/Logout
+
+서블릿 필터 : 요청과 servlet 사이에 filter를 넣어서 공통된 작업을 수행할 수 있다.
+
+LoggerFilter는 url을 web.xml에 등록해보는 예제
+LoginFilter는 /*(모든 요청)에 대한 필터
+EncodingFilter는 등록한 URL에만 해당하는 필터
+
+등록한 URL 모아보는법!
+1. Servlet
+Project Explorer>Deployment Descriptor>Servlet Mappings
+2. Filter
+Project Explorer>Deployment Descriptor>Filter Mappings
+
+@WebServlet
+@WebFilter
+@WebListener
+로 작성한 클래스들 모두 web.xml에 작성되게 된다.
+그걸 Deployment Descriptor(배포서술자)에서 보여주는것.
+WEB-INF에 있는 web.xml이랑은 다르다.
+
+사실 제가 처음에 password비워놓는다고 한건
+입력란을 공란으로 놓은 다음에
+MemberUpdateServlet에서 읽어온 password값이 없으면
+password값만 update하지 않는다 였는데
+그러면 요청해야되는 sql이 달라지네요 으억
+
+@실습문제: POST /mvc/member/updatePassword
+1. 적절한 유효성검사후 폼 제출할 것.
+->updatePassword.jsp의 script문에 유효성검사 추가.
+2. 기존비밀번호가 일치할때만, 신규비밀번호로 업데이트한다.
+   기존비밀번호 일치여부를 어떻게 확인할것인가.
+->loginMember에서 가져온 password와 비교한다.
+->일치하면 flag=true 내부에 업무로직을 작성함.
+->현재 비밀번호 불일치시에는 알림만 띄우고 싶은데 할 줄 모름.
+3. 신규비밀번호 업데이트후에는 
+	/mvc/member/memberView로 리다이렉트한다.
+->성공/실패 둘다 리다이렉트 처리함.
+4. 로그인하지 않고 접근시에는 어떻게 할것인가.
+->LoginFilter의 @WebFilter에 "/member/memberDelete" 추가함.
+5. POST /mvc/member/memberUpdate 는 비밀번호처리를 제외.
+->password를 request가 아니라 loginMember에서 가져옴.

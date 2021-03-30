@@ -51,7 +51,10 @@ values (
 );
 
 delete from member where member_id like 'newId%';
-commit;
-select * from member;
 update member set password='1234', member_name='newOne', member_role=''
 where member_id='asdfasdf';
+
+--update member set password='1ARVn2Auq2/WAqx2gNrL+q3RNjAzXpUfCXrzkA6d4Xa22yhRLy4AC50E+6UTPoscbo31nbOoq51gvkuXzJ6B2w==';
+update member set password='1234' where member_id='';
+commit;
+select * from member;

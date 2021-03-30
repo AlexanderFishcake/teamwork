@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import common.MvcUtils;
 import member.model.service.MemberService;
 import member.model.vo.Member;
 
@@ -33,7 +34,7 @@ public class MemberLoginServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		//2. 사용자 입력값 처리
 		String memberId = request.getParameter("memberId");
-		String password = request.getParameter("password");
+		String password = MvcUtils.getSha512(request.getParameter("password"));
 		String saveId = request.getParameter("saveId");
 		System.out.println("memberId@servlet = "+memberId);
 		System.out.println("password@servlet = "+password);

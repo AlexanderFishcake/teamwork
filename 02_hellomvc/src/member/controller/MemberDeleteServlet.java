@@ -29,13 +29,14 @@ public class MemberDeleteServlet extends HttpServlet {
 		
 		if(result==1) {
 			//성공
-			session.setAttribute("msg", "회원탈퇴 성공했습니다.");
+//			session.setAttribute("msg", "회원탈퇴 성공했습니다.");
+			response.sendRedirect(request.getContextPath()+"/member/Logout");
 		}
 		else if(result==0){
 			//실패
 			session.setAttribute("msg", "회원탈퇴 실패했습니다.");
+			response.sendRedirect(request.getContextPath());
 		}
-		response.sendRedirect(request.getContextPath());
 	}
 
 }

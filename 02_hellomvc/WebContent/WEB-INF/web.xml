@@ -9,4 +9,16 @@
   <session-config>
   	<session-timeout>30</session-timeout>
   </session-config>
+
+<!-- servlet과 유사한 매핑과정 -->  
+  <filter>
+  	<filter-name>LoggerFilter</filter-name>
+  	<filter-class>common.filter.LoggerFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>LoggerFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  
 </web-app>
