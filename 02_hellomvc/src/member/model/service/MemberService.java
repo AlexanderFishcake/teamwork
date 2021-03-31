@@ -1,6 +1,8 @@
 package member.model.service;
 
 import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
 
 import member.model.dao.MemberDao;
 import member.model.vo.Member;
@@ -70,6 +72,39 @@ public class MemberService {
 		
 		close(conn);
 		return result;
+	}
+
+	public List<Member> selectList() {
+		Connection conn = getConnection();
+		//--------Dao 요청----------
+		List<Member> list = memberDao.selectList(conn);
+		//6. 트랜잭션처리(DML) commit/rollback		
+		if(list!=null) commit(conn);
+		else rollback(conn);
+		//7. 자원반납(conn)
+		close(conn);
+		
+		return list;
+	}
+
+	public int updateMemberRole(String memberId, String memberRole) {
+		Connection conn = getConnection();
+		int result = memberDao.updateMemberRole(conn,memberId,memberRole);
+		
+		if(result>0) commit(conn);
+		else rollback(conn);
+		
+		close(conn);
+		return result;
+	}
+
+	public List<Member> searchMember(Map<String, String> param) {
+		Connection conn = getConnection();
+		List<Member> list = memberDao.searchMember(conn,param);
+		if(list!=null) commit(conn);
+		else rollback(conn);
+		close(conn);
+		return list;
 	}
 
 

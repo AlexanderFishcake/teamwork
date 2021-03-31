@@ -11,8 +11,8 @@
 			<table>
 				<tr>
 					<th>현재 비밀번호</th>
-					<!-- <td><input type="password" name="password" id="password" required></td> -->
-					<td><input type="password" name="passwordPresent" id="passwordPresent" required></td>
+					<td><input type="password" name="password" id="password" required></td>
+					<!-- <td><input type="password" name="passwordPresent" id="passwordPresent" required></td> -->
 				</tr>
 				<tr>
 					<th>변경할 비밀번호</th>
