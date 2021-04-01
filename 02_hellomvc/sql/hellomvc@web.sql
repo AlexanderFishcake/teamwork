@@ -56,8 +56,47 @@ where member_id='asdfasdf';
 
 --update member set password='1ARVn2Auq2/WAqx2gNrL+q3RNjAzXpUfCXrzkA6d4Xa22yhRLy4AC50E+6UTPoscbo31nbOoq51gvkuXzJ6B2w==';
 update member set password='1234' where member_id='';
-select * from member order by enroll_date desc;
 
 commit;
 select * from member;
-select * from member where member_name like '%자%'
+select * from member where gender ='M';
+
+--페이징
+--1. rownum 행 추가시 자동으로 부여되는 no
+select *
+from(
+        select rownum rnum, M.*
+        from(
+                select M.*
+                from member M
+                order by enroll_date desc    
+                ) M
+        )M
+where rnum between 11 and 20;
+--2. window함수 row_number
+--cPage = 1  : 1~10
+--cPage = 2 : 11~20
+--cPage = 3 : 21~30
+--...
+--cPage = 10 : 91~100
+--cPage = 11 : 101~105
+select *
+from(
+        select row_number() over(order by enroll_date desc) rnum, M.*
+        from member M
+        ) M
+where rnum between 11 and 20;
+
+select * from(select row_number() over(order by enroll_date desc) rnum, M.* from member M) M where rnum between 11 and 20
+;
+
+select count(*) from member;
+ 
+select *
+from(
+        select row_number() over(order by enroll_date desc) rnum, M.*
+        from (
+                select * from member where member_id like '%a%'
+                ) M
+        ) M
+where rnum between 11 and 20;

@@ -41,8 +41,8 @@
        <div id="search-gender" class="search-type">
            <form action="<%=request.getContextPath()%>/admin/memberFinder">
                <input type="hidden" name="searchType" value="gender"/>
-               <input type="radio" name="searchKeyword" value="M" <%="gender".equals(type) && "M".equals(kw) ? "ckecked":""%>> 남
-               <input type="radio" name="searchKeyword" value="F" <%="gender".equals(type) && "M".equals(kw) ? "ckecked":""%>> 여
+               <input type="radio" name="searchKeyword" value="M" <%="gender".equals(type) && "M".equals(kw) ? "checked":""%>> 남
+               <input type="radio" name="searchKeyword" value="F" <%="gender".equals(type) && "F".equals(kw) ? "checked":""%>> 여
                <button type="submit">검색</button>
            </form>
        </div>
@@ -75,7 +75,7 @@
 						<td><%=m.getMemberId() %></td>
 						<td><%=m.getMemberName() %></td>
 						<td>
-							<select class="member-role" data-member-id="<%=m.getMemberId()%>">
+							<select class="member-role" data-member-id="<%=m.getMemberId()%>" data-member-role="<%=m.getMemberRole()%>">
 								<option
 									value="<%=MemberService.ADMIN_ROLE%>"
 								<%=MemberService.ADMIN_ROLE.equals(m.getMemberRole())? "selected" : " "%> >관리자</option>
@@ -100,6 +100,8 @@
 		%>
 		</tbody>
 	</table>
+	<div id="pageBar"></div>
+		<%=request.getAttribute("pageBar") %>
 </section>
 <form 
 	action="<%=request.getContextPath() %>/admin/memberRoleUpdate" 
@@ -131,6 +133,13 @@
 			$frm.find("[name=memberId]").val(memberId);
 			$frm.find("[name=memberRole]").val(memberRole);
 			$frm.submit();
+		}
+		//변경 취소를 눌렀다면 option을 원래대로.
+		else{
+			console.log("옵션값 : "+$(this).val());
+			console.log("originMemberRole : "+$(this).data("memberRole"));
+			var originMemberRole = $(this).data("memberRole");
+			$(this).val(originMemberRole).prop("selected", true);
 		}
 	});
 </script>

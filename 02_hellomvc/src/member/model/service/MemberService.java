@@ -86,7 +86,15 @@ public class MemberService {
 		
 		return list;
 	}
-
+	public List<Member> selectList(int start, int end) {
+		Connection conn = getConnection();
+		List<Member> list = memberDao.selectList(conn, start, end);
+		if(list!=null) commit(conn);
+		else rollback(conn);
+		close(conn);
+		return list;
+	}
+	
 	public int updateMemberRole(String memberId, String memberRole) {
 		Connection conn = getConnection();
 		int result = memberDao.updateMemberRole(conn,memberId,memberRole);
@@ -106,6 +114,24 @@ public class MemberService {
 		close(conn);
 		return list;
 	}
+
+	public int selectMemberCount() {
+		Connection conn = getConnection();
+		//--------Dao 요청----------
+		int totalContent = memberDao.selectMemberCount(conn);
+		close(conn);
+		return totalContent;
+	}
+
+	public List<Member> searchMember(Map<String, String> param, int start, int end) {
+		Connection conn = getConnection();
+		List<Member> list = memberDao.searchMember(conn,param,start,end);
+		if(list!=null) commit(conn);
+		else rollback(conn);
+		close(conn);
+		return list;
+	}
+
 
 
 

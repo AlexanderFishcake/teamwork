@@ -134,8 +134,8 @@ Project Explorer>Deployment Descriptor>Filter Mappings
 그걸 Deployment Descriptor(배포서술자)에서 보여주는것.
 WEB-INF에 있는 web.xml이랑은 다르다.
 
-사실 제가 처음에 password비워놓는다고 한건
-입력란을 공란으로 놓은 다음에
+제가 처음에 회원정보보기>password칸을 비워놓는다고 한건
+password입력란을 공란으로 놓은 다음에
 MemberUpdateServlet에서 읽어온 password값이 없으면
 password값만 update하지 않는다 였는데
 그러면 요청해야되는 sql이 달라지네요 으억
@@ -155,3 +155,39 @@ password값만 update하지 않는다 였는데
 ->LoginFilter의 @WebFilter에 "/member/memberDelete" 추가함.
 5. POST /mvc/member/memberUpdate 는 비밀번호처리를 제외.
 ->password를 request가 아니라 loginMember에서 가져옴.
+
+회원관리 페이지 구성하기
+onclick을 통한 form 제출:
+	form 내부의 input:submit 속성을 가진 값들을 제출
+			$frm = $(document.memberUpdateFrm);		
+			$frm.attr("action", "<%= request.getContextPath() %>/member/memberDelete")
+				.attr("method","POST")
+				.submit();
+숨겨진 form을 통한 제출
+			var $frm = $(document.memberRoleUpdateFrm);
+			$frm.find("[name=memberId]").val(memberId);
+			$frm.find("[name=memberRole]").val(memberRole);
+			$frm.submit();
+
+/admin/memberList 관련 Servlet들
+검색창 구성	AdminMemberFilderServlet
+	getRequestDispatcher로 memberList.jsp에 html작성 위임
+표 구성	AdminMemberListServlet
+	getRequestDispatcher로 memberList.jsp에 html작성 위임
+권한 갱신	AdminMemberRoleUpdateServlet
+	sendRedirect 로 memberList로 이동
+	
+웹 어플리케이션 만들기
+중고나라? 인스타그램?
+
+select에
+data-member-role="<%=m.getMemberRole()%>" 추가
+script에서
+if(confirm 다음에 else문을 만들어서
+	var originMemberRole = $(this).data("memberRole");
+	$(this).val(originMemberRole).prop("selected", true);
+작동하는거 같은데 아이디어는 맞겠죠..?
+
+이운산 최민순 윤기상 김경태 김한성
+
+페이징 : 모든 결과를 화면에 표시하지 말고 page를 나누는 것

@@ -220,6 +220,46 @@ public class MemberDao {
 		return list;
 	}
 
+	public List<Member> selectList(Connection conn, int start, int end) {
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("selectPagedList");
+		ResultSet rset=null;
+		List<Member> list = new ArrayList<Member>();
+		Member member = null;
+		try {
+			//3. PreparedStatement 객체 생성(미완성쿼리)
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, start);
+			pstmt.setInt(2, end);
+			//4. 실행 DML(executeUpdate) -> int , DQL(executeQuery) -> REsultSet
+			rset = pstmt.executeQuery();
+			//4-1) ResultSet -> Java객체 옮겨담기
+			while(rset.next()) {
+				String memberId = rset.getString("member_id");
+				String password = rset.getString("password");
+				String memberName = rset.getString("member_name");
+				String memberRole = rset.getString("member_role");				
+				String gender = rset.getString("gender");
+				Date birtyday = rset.getDate("birthday");
+				String email = rset.getString("email");
+				String phone = rset.getString("phone");
+				String address = rset.getString("address");
+				String hobby = rset.getString("hobby");
+				Date enrollDate = rset.getDate("enroll_date");
+				member = new Member(memberId, password, memberName, memberRole, gender, birtyday, email, phone, address, hobby, enrollDate);
+				list.add(member);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//5. 자원반납(생성역순 rset - pstmt)
+		close(rset);
+		close(pstmt);
+		
+		return list;
+	}
+
 	public int updateMemberRole(Connection conn, String memberId, String memberRole) {
 		PreparedStatement pstmt = null;
 		String sql = prop.getProperty("updateMemberRole");
@@ -281,6 +321,81 @@ public class MemberDao {
 		
 		return list;
 	}
+
+	public int selectMemberCount(Connection conn) {
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("selectMemberCount");
+		int count = 0;		
+		ResultSet rset=null;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				count= rset.getInt("count(*)");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		close(rset);
+		close(pstmt);
+		
+		return count;
+	}
+
+	public List<Member> searchMember(Connection conn, Map<String, String> param, int start, int end) {
+		PreparedStatement pstmt = null;
+		String queryFront = prop.getProperty("searchPagedMemberFront");
+		String queryBack = prop.getProperty("searchPagedMemberBack");
+		String queryAll="";
+		
+		switch(param.get("searchType")) {
+		case "memberId" : queryFront+= " member_id like '%"+param.get("searchKeyword")+"%'"; break;
+		case "memberName" : queryFront+= " member_name like '%"+param.get("searchKeyword")+"%'"; break;
+		case "gender" : queryFront+= " gender ='"+param.get("searchKeyword")+"'"; break;
+		}
+		/*
+		 * searchPagedMemberFront = select * from( select row_number() over(order by enroll_date desc) rnum, M.* from ( select * from member where
+		 * searchPagedMemberBack = ) M ) M where rnum between ? and ?
+		 */
+		queryAll = queryFront + queryBack;
+		System.out.println(queryAll);
+		
+		ResultSet rset=null;
+		List<Member> list = new ArrayList<Member>();
+		Member member = null;
+		try {
+			pstmt = conn.prepareStatement(queryAll);
+			pstmt.setInt(1, start);
+			pstmt.setInt(2, end);
+			
+			rset = pstmt.executeQuery();
+
+			while(rset.next()) {
+				String memberId = rset.getString("member_id");
+				String password = rset.getString("password");
+				String memberName = rset.getString("member_name");
+				String memberRole = rset.getString("member_role");				
+				String gender = rset.getString("gender");
+				Date birtyday = rset.getDate("birthday");
+				String email = rset.getString("email");
+				String phone = rset.getString("phone");
+				String address = rset.getString("address");
+				String hobby = rset.getString("hobby");
+				Date enrollDate = rset.getDate("enroll_date");
+				member = new Member(memberId, password, memberName, memberRole, gender, birtyday, email, phone, address, hobby, enrollDate);
+				list.add(member);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//5. 자원반납(생성역순 rset - pstmt)
+		close(rset);
+		close(pstmt);
+		
+		return list;
+	}
+
 
 
 }
