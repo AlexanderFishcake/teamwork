@@ -49,8 +49,10 @@ public class AdminMemberFinderServlet extends HttpServlet {
 		System.out.println("list@servlet = "+list);
 		
 		//3. pagebar영역 작업
-		List<Member> listOrigin = memberService.searchMember(param);
-		int totalContents = listOrigin.size(); 
+//		List<Member> listOrigin = memberService.searchMember(param);
+//		int totalContents = listOrigin.size(); 
+		//searchMember 부르지 말고 param을 매개변수로 갖는 count함수를 만들자.
+		int totalContents = memberService.searchMemberCount(param);
 		System.out.println("list 카운트값 : "+totalContents);		
 		///mvc/admin/memberFinder?searchType=memberId&searchKeyword=a
 		String url = request.getRequestURI()+"?searchType="+searchType+"&searchKeyword="+searchKeyword;

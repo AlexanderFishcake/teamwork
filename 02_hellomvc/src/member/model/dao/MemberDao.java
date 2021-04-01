@@ -396,6 +396,33 @@ public class MemberDao {
 		return list;
 	}
 
+	public int searchMemberCount(Connection conn, Map<String, String> param) {
+		PreparedStatement pstmt = null;
+		String query = "select count(*) from member where";
+		
+		switch(param.get("searchType")) {
+		case "memberId" : query+= " member_id like '%"+param.get("searchKeyword")+"%'"; break;
+		case "memberName" : query+= " member_name like '%"+param.get("searchKeyword")+"%'"; break;
+		case "gender" : query+= " gender ='"+param.get("searchKeyword")+"'"; break;
+		}
+		prop.getProperty("selectMemberCount");
+		int count = 0;		
+		ResultSet rset=null;
+		try {
+			pstmt = conn.prepareStatement(query);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				count= rset.getInt("count(*)");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		close(rset);
+		close(pstmt);
+		
+		return count;
+	}
+
 
 
 }

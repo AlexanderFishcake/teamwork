@@ -132,6 +132,14 @@ public class MemberService {
 		return list;
 	}
 
+	public int searchMemberCount(Map<String, String> param) {
+		Connection conn = getConnection();
+		//--------Dao 요청----------
+		int totalContent = memberDao.searchMemberCount(conn,param);
+		close(conn);
+		return totalContent;
+	}
+
 
 
 
