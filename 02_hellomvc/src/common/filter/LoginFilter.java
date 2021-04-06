@@ -17,7 +17,12 @@ import member.model.vo.Member;
 /**
  * Servlet Filter implementation class LoginFilter
  */
-@WebFilter(urlPatterns = { "/member/memberView", "/member/memberUpdate", "/member/memberDelete", "/member/updatePassword" })
+@WebFilter(urlPatterns = {
+		"/member/memberView", 
+		"/member/memberUpdate", 
+		"/member/memberDelete", 
+		"/member/updatePassword",
+		"/board/boardForm"})
 public class LoginFilter implements Filter {
 
 	/**

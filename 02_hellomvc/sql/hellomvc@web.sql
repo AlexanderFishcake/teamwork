@@ -100,3 +100,7 @@ from(
                 ) M
         ) M
 where rnum between 11 and 20;
+
+select * from( select row_number() over(order by enroll_date desc) rnum, M.* from ( select * from member where member_id like '%a%' ) M ) M where rnum between 11 and 20;
+select * from member where member_id like '%a%'
+select * from member where member_id like '%a%'

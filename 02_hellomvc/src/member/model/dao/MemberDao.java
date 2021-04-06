@@ -280,12 +280,14 @@ public class MemberDao {
 		PreparedStatement pstmt = null;
 		String query = prop.getProperty("searchMember");
 		
-		switch(param.get("searchType")) {
-		case "memberId" : query+= " member_id like '%"+param.get("searchKeyword")+"%'"; break;
-		case "memberName" : query+= " member_name like '%"+param.get("searchKeyword")+"%'"; break;
-		case "gender" : query+= " gender ='"+param.get("searchKeyword")+"'"; break;
-		}
-		System.out.println(query);
+//		switch(param.get("searchType")) {
+//		case "memberId" : query+= " member_id like '%"+param.get("searchKeyword")+"%'"; break;
+//		case "memberName" : query+= " member_name like '%"+param.get("searchKeyword")+"%'"; break;
+//		case "gender" : query+= " gender ='"+param.get("searchKeyword")+"'"; break;
+//		}
+		query = setQuery(query, param.get("searchType"), param.get("searchKeyword"));
+		
+		System.out.println("searchMember : " +query);
 		//select * from member where member_id like %a%
 		//select * from member where member_name like %동%
 		//select * from member where gender = 'M'
@@ -344,27 +346,17 @@ public class MemberDao {
 
 	public List<Member> searchMember(Connection conn, Map<String, String> param, int start, int end) {
 		PreparedStatement pstmt = null;
-		String queryFront = prop.getProperty("searchPagedMemberFront");
-		String queryBack = prop.getProperty("searchPagedMemberBack");
-		String queryAll="";
-		
-		switch(param.get("searchType")) {
-		case "memberId" : queryFront+= " member_id like '%"+param.get("searchKeyword")+"%'"; break;
-		case "memberName" : queryFront+= " member_name like '%"+param.get("searchKeyword")+"%'"; break;
-		case "gender" : queryFront+= " gender ='"+param.get("searchKeyword")+"'"; break;
-		}
-		/*
-		 * searchPagedMemberFront = select * from( select row_number() over(order by enroll_date desc) rnum, M.* from ( select * from member where
-		 * searchPagedMemberBack = ) M ) M where rnum between ? and ?
-		 */
-		queryAll = queryFront + queryBack;
-		System.out.println(queryAll);
+
+		String query = prop.getProperty("searchPagedMember");
+		query = setQuery(query, param.get("searchType"), param.get("searchKeyword"));
+
+		System.out.println("searchPagedMember : "+query);
 		
 		ResultSet rset=null;
 		List<Member> list = new ArrayList<Member>();
 		Member member = null;
 		try {
-			pstmt = conn.prepareStatement(queryAll);
+			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, start);
 			pstmt.setInt(2, end);
 			
@@ -398,14 +390,16 @@ public class MemberDao {
 
 	public int searchMemberCount(Connection conn, Map<String, String> param) {
 		PreparedStatement pstmt = null;
-		String query = "select count(*) from member where";
+//		String query = "select count(*) from member where";
+		String query = prop.getProperty("searchMemberCount");
 		
-		switch(param.get("searchType")) {
-		case "memberId" : query+= " member_id like '%"+param.get("searchKeyword")+"%'"; break;
-		case "memberName" : query+= " member_name like '%"+param.get("searchKeyword")+"%'"; break;
-		case "gender" : query+= " gender ='"+param.get("searchKeyword")+"'"; break;
-		}
-		prop.getProperty("selectMemberCount");
+//		switch(param.get("searchType")) {
+//		case "memberId" : query+= " member_id like '%"+param.get("searchKeyword")+"%'"; break;
+//		case "memberName" : query+= " member_name like '%"+param.get("searchKeyword")+"%'"; break;
+//		case "gender" : query+= " gender ='"+param.get("searchKeyword")+"'"; break;
+//		}
+		query=setQuery(query,param.get("searchType"),param.get("searchKeyword"));
+				
 		int count = 0;		
 		ResultSet rset=null;
 		try {
@@ -422,7 +416,15 @@ public class MemberDao {
 		
 		return count;
 	}
-
+	
+	public String setQuery(String query, String searchType, String searchKeyword) {
+		switch(searchType) {
+		case "memberId" 	: query = query.replace("#", "member_id like '%" + searchKeyword + "%'"); break;
+		case "memberName" 	: query = query.replace("#", "member_name like '%" + searchKeyword + "%'"); break;
+		case "gender" 		: query = query.replace("#", "gender = '" + searchKeyword + "'"); break;
+		}
+		return query;
+	}
 
 
 }
