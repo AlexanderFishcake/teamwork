@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	<!-- parameterType값을 줄일 수 있는 별칭. 별칭을 써야 mapper에서 줄여쓸 수 있다. -->
+	<typeAliases>
+		<typeAlias type="com.kh.mybatis.student.model.vo.Student" alias="student"/>
+	</typeAliases>
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED"><!-- =connection pool 이용하겠다 -->
+        <property name="driver" value="oracle.jdbc.OracleDriver"/>
+        <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+        <property name="username" value="mybatis"/>
+        <property name="password" value="mybatis"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+  	<!-- query xml location -->
+    <mapper resource="mapper/student/student-mapper.xml"/>
+  </mappers>
+</configuration>
