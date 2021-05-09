@@ -101,29 +101,29 @@ public class BoardEnrollServlet extends HttpServlet {
 			board.setAttach(attach);
 		}
 		
-		//2. 업무로직 : db에 insert		
-		int result = boardService.insertBoard(board);
-		System.out.println("처리결과 = "+result);
-		
-		//가입 성공/실패여부 판단
-		//1. 가입 성공: result==1
-		//2. 가입 실패 : result==0 || result==null
-		
-		HttpSession	session = request.getSession();
-		
-		if(result==1) {
-			//성공
-			session.setAttribute("msg", "등록 성공했습니다.");
-			//no를 긁어온 꼼수: BoardService에 전역변수 globalBoardNo를 사용함.
-			response.sendRedirect(request.getContextPath()+"/board/boardView?no="+boardService.globalBoardNo );
+		try {
+			//2. 업무로직 : db에 insert		
+			int result = boardService.insertBoard(board);
+			System.out.println("처리결과 = "+result);
+			
+			//가입 성공/실패여부 판단
+			//1. 가입 성공: result==1
+			//2. 가입 실패 : result==0 || result==null
+			
+			HttpSession	session = request.getSession();
+			
+			String msg = (result>0) ? "게시글 등록 성공!" : "게시글 등록 실패!";
+			String location = request.getContextPath();
+			location+= (result>0) ? "/board/boardView?no="+board.getNo() : "/board/boardList";
+			
+			session.setAttribute("msg", msg);
+			response.sendRedirect(location);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
-		else if(result==0){
-			//실패
-			session.setAttribute("msg", "등록 실패했습니다.");
-			response.sendRedirect(request.getContextPath()+"/board/boardList" );
-		}
-		//3. DML요청 : 리다이렉트 & 사용자 피드백(alert:등록되었습니다)
-		// /mvc/board/boardList
+		
 	}
 
 }

@@ -1,10 +1,12 @@
+<%@page import="board.model.vo.BoardVer2"%>
 <%@page import="board.model.vo.Board"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 <%
-	List<Board> list = (List<Board>)request.getAttribute("list");
+//	List<Board> list = (List<Board>)request.getAttribute("list");
+	List<BoardVer2> list = (List<BoardVer2>)request.getAttribute("list");
 %>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/board.css" />
 <section id="board-container">
@@ -29,12 +31,14 @@
 				</tr>
 			<%
 				} else{ 
-					for(Board b : list){
+					//for(Board b : list){
+					for(BoardVer2 b : list){
 			%>
 						<tr>
 							<td><%=b.getNo() %></td>
 							<td>
 								<a href="<%=request.getContextPath()%>/board/boardView?no=<%=b.getNo()%>"><%=b.getTitle() %></a>
+								<span style="font-size: small;">[<%=b.getCommentCount() %>]</span>
 							</td>
 							<td><%=b.getWriter() %></td>
 							<td><%=b.getRegDate() %></td>

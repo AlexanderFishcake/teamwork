@@ -85,8 +85,12 @@ public class MemberLoginServlet extends HttpServlet {
 			session.setAttribute("msg", "로그인에 실패했습니다.");
 
 		}
+		//이전페이지로 리다이렉트처리
+		String referer = request.getHeader("Referer");
+		System.out.println("referer@servlet	= "+referer);
+		
 		//리다이렉트 : url변경
-		response.sendRedirect(request.getContextPath());
+		response.sendRedirect(referer);
 		
 		
 	}

@@ -191,3 +191,100 @@ if(confirm 다음에 else문을 만들어서
 이운산 최민순 윤기상 김경태 김한성
 
 페이징 : 모든 결과를 화면에 표시하지 말고 page를 나누는 것
+contents section
+pagebar section
+각 상황에 맞는 html을 작성해서 request.setAttribute로 넘김
+이후 memberList.jsp에 가져온 html 추가함.
+
+boardForm 제출값: title writer upFile content
+
+게시물 올릴때 파일 전송하는거
+는 0부터 새로 작성하는게 아니라
+cos.jar 랑 apache에서 긁어오면 쉽다.
+
+file upload를 위해서 form에 반드시 추가해야하는 tag:
+enctype="multipart/form-data"
+
+pageContext - request - session -application
+생명주기 : jsp - 이번요청 - browser - was사용 내내
+
+WAS는 project를 tomcat에 제출하여 실행된다.
+그래서 was는 web container다.
+톰캣에 webapp폴더가 있는데
+
+deploy=배포=publish(이클립스)
+- 이클립스의 기능
+project를 tomcat 복붙하는 대신
+project의 주소를 참조해서 실행해봐라는 기능
+= Serve modules without publishing
+
+* BoardViewServlet 작성하기
+필요한 기능
+1. board객체를 가져와야한다.
+뭘 기준으로 ? 입력값 no. 어디서? board에서.
+Board board = selectBoard(no);
+2. 첨부파일 객체를 가져와야한다.
+Attachment attach = selectAttach(no);
+이 메소드는 결과값이 없을 수 있는데
+Servlet단에서 없을경우를 설정해야하나? 아예 jsp에 값을 안넘기도록?
+
+방금 작성한 글로 리다이렉트하려면 그 글의 no가 필요하다. 어떻게 구하지?
+insertBoard의 boardNo를 가져올 수가 있나?
+이미 위쪽에서 리턴값까지 받고 없어진 값인데?
+BoardService에 전역변후 globalBoardNo를 선언. boardNo를 복사해서 가져온다.
+
+\n은 <br/>로 바꿔서 출력해주기.
+script공격에 대비하기: 꺾쇠부호를 html표현방식 &lt &gt로 변경
+FileDownloadServlet
+
+boardDelete만들기.
+게시물이 삭제될때 첨부파일도 같이 삭제되어야 한다
+...는 DB단에서 on delete cascade로 같이 지워진다.
+그러므로 게시물만 지우면 된다.
+
+Controller는 예외가 던져진지 아닌지 모른다. result=0으로 실패를 알 수 있는 정도?
+그래서 Service>try/catch에 throw e를 통해 controller가 예외처리를 결정할 수 있도록 연결한다.
+그런데 이러면 예외페이지가 떠서 사용자에게 사이트 구조가 노출될 수 있다.
+그래서 Servlet 내용을 통째로 try에 넣는다.
+Servlet(view)단에서 e.printStackTrace()와 throw e를 같이 쓰고,
+service는 그냥 throw e로 그냥 지나가고
+dao에서 boardException등으로 메시지를 날린다. 여기서 e.printStackTrace하면 안됨.
+
+input : file태그의 value속성의 text는 임의변경할 수 없다.
+
+댓글 대댓글 
+오느레 숙제:
+1. 댓글삭제
+2. 댓글 갯수 표시[4], 없으면 띄우지 말고. Board의 상속을 써봐라. 아마 BoardListServlet에서 조작해야할듯?
+즉, Servlet단에서 List<Board>의 각 board.getNo에 따른 댓글갯수(int)를 얻어와야 한다.
+그리고 Board에는 없는 댓글숫자 필드를 위해 Board를 상속한 BoardVer2를 만든다.
+메소드가 필요하다
+기능: no값(게시물 번호)를 입력받으면 no=77인값 갯수 세서 리턴...
+개선: list<Board>를 입력받아서 list<BoardVer2>를 리턴하게 하면 된다,.
+BoardDao에서 commentNum에만 입력넣으면 된다.
+sql을 잘 자야 한다. 입력받은 board각각에 맞는 리턴값을 줘야 하는데 count가 0인것도 표시해줘야 한다.
+한개의 리스트의 게시물 5개의 댓글만 가져와야 하고.
+
+이거 join해야 한다.
+게시글의 no랑 댓글의 board_no랑 join해서 리스트 만들고,
+그 no로 group해서 count하면 된다.
+
+구현방법 정리
+기존의 List<Board> list = boardService.selectList(start,end);
+대신 List<BoardVer2> list = boardService.selectListVer2(start,end); 을 사용함.
+selectListVer2 내부에서 
+1. selectListVer2 : selectList와 같은 기능
+2. countBoardCommentList : commentCount를 읽어오는 기능
+을 boardDao에서 실행한 뒤에 selectList의 commentCount에 countBoardCommentList의 commentCount를 세팅함.
+
+성능 향상을 위한 Connection pool을 사용.
+수정해야하는 세군데 : context.xml -> web.xml ->JDBCTemplate
+
+Servers>hellomvc-server-config>context.xml 에다가 <!-- DBCP 자원생성 --> 추가.
+web.xml 에다가 <!-- Resource참조 -->  추가
+JDBCTemplate의 getConnection 통째로 수정.
+
+!--SQL Developer에서 sql문 뽑아내는법--!
+도구>데이터베이스 익스포트>접속에서 계정선택
+계단식 삭제, 삭제 추가선택. 다음>
+객체지정에서...>>(모두선택) 다음>다음>완료
