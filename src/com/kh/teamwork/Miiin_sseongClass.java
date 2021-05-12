@@ -6,4 +6,7 @@ public class Miiin_sseongClass {
 		System.out.println("hello guys");
 	}
 
+	public void output() {
+		System.out.println("¾È³ç");
+	}
 }
