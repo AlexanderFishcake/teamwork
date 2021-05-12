@@ -165,7 +165,10 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,eclipse,java,macos,maven
+<<<<<<< HEAD
 <<<<<<< HSdover
 /build/
 =======
 >>>>>>> master
+=======
+>>>>>>> branch 'master' of https://github.com/AlexanderFishcake/teamwork.git
