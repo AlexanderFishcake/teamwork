@@ -12,4 +12,7 @@ public class AlexanderFishcakeClass {
 	}
 	
 	//pull request test line
+	public void hello3() {
+		System.out.println("hello from Choiminsoon");
+	}
 }
